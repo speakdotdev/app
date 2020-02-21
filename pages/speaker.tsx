@@ -1,13 +1,16 @@
 import React from 'react';
 import { NextPage } from 'next';
 import fetch from 'isomorphic-unfetch';
+import UpcomingEvent from '../components/UpcomingEvent';
 
 interface Props {
     speakerName: string
 }
 
 const Speaker:NextPage<Props> = ({speakerName}) => (
- <h1>Speaker Page for {speakerName}</h1>
+ <div className="p-5">
+    <UpcomingEvent />
+ </div>
 );
 
 Speaker.getInitialProps = async () => {
