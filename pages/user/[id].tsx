@@ -1,11 +1,12 @@
 import React from 'react';
 import { NextPage } from 'next';
 import fetch from 'isomorphic-unfetch';
-import AboutSpeaker from '../components/AboutSpeaker';
-import UpcomingEvent from '../components/UpcomingEvent';
-import EventCard from '../components/EventCard';
+import AboutSpeaker from '../../components/AboutSpeaker';
+import UpcomingEvent from '../../components/UpcomingEvent';
+import EventCard from '../../components/EventCard';
 import Head from 'next/head'
-import MainMenu from '../components/shared/MainMenu';
+import MainMenu from '../../components/shared/MainMenu';
+import { useRouter } from 'next/router'
 
 interface Props {
     speakerName: string
@@ -19,12 +20,13 @@ interface MainMenu {
 }
 
 const Speaker:NextPage<Props> = ({speakerName}) => {
+    const router = useRouter();
 
     const mainMenu = [
-        {order: 1, icon: "far fa-keynote", name: "Upcoming Events", link: "/speaker"},
+        {order: 1, icon: "far fa-keynote", name: "Upcoming Events", link: `/user/${router.query.id}`},
         {order: 2, icon: "far fa-presentation", name: "Talks", link: "/speaker/talks"},
         {order: 3, icon: "far fa-feather-alt", name: "Posts", link: "/speaker/posts"},
-        {order: 4, icon: "fas fa-user", name: "Bio", link:"/speaker/about"}
+        {order: 4, icon: "fas fa-user", name: "Bio", link: `/user/${router.query.id}/about`}
     ]
     return (
     <div>
