@@ -3,22 +3,12 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import EventCard from '../../components/EventCard';
 import MainMenu from '../../components/shared/MainMenu';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
 import { connectRealm } from '../../lib/realm';
+import auth0 from '../../lib/auth0';
+import { getQueryParser } from 'next/dist/next-server/server/api-utils';
+import { fetchGraphQLQuery } from '../../lib/fetch';
 
-const QUERY = gql`
-  {
-    events {
-      _id
-      name
-      url
-    }
-  }
-`;
-
-const Events = ({ data }) => {
-  const events = [0, 1, 2, 3, 4, 5];
+const Events = ({ events }) => {
   const mainMenu = [
     { order: 1, name: 'Recommended', icon: 'far fa-keynote', link: '/events' },
     {
@@ -28,8 +18,6 @@ const Events = ({ data }) => {
       link: '/events?filter=Closing',
     },
   ];
-
-  console.log(data);
 
   return (
     <div className="container mx-auto">
@@ -47,7 +35,7 @@ const Events = ({ data }) => {
         <div className="w-3/5">
           {events.map((event) => (
             <div key={event} className="mb-5">
-              <EventCard />
+              <EventCard event={event} />
             </div>
           ))}
         </div>
@@ -59,29 +47,17 @@ const Events = ({ data }) => {
 
 export async function getStaticProps(context) {
   let query = `
-  {
-    talk {
+  query {
+    events {
       _id
-      title
-      event {
-        url
-        presentations {
-          speaker
-          title
-        }
-      }
+      name
+      url
     }}`;
-
-  let res = await fetch(`https://speakdevtest.vercel.app/api/realm`, {
-    method: 'POST',
-    body: query,
-  });
-
-  let data = await res.json();
+  const data = await fetchGraphQLQuery(query);
 
   return {
     props: {
-      data,
+      events: data.events,
     },
   };
 }
