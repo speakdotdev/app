@@ -49,9 +49,6 @@ export async function getStaticProps({ params }) {
       _id
       name
       url
-      presentations {
-        speaker
-      }
     }}`;
   const data = await fetchGraphQLQuery(query);
   console.log(data);
