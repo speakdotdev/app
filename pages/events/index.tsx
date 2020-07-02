@@ -58,6 +58,7 @@ const Events = ({ data }) => {
 };
 
 export async function getStaticProps(context) {
+  /*
   let query = `
   {
     talk {
@@ -78,7 +79,8 @@ export async function getStaticProps(context) {
   });
 
   let data = await res.json();
-
+  */
+  let data = {};
   return {
     props: {
       data,
