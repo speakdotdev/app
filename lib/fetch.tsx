@@ -1,4 +1,5 @@
 import { connectRealm } from './realm';
+import fetch from 'isomorphic-unfetch';
 
 export async function fetchUser() {
   try {
