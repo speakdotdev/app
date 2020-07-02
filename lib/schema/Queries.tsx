@@ -6,8 +6,8 @@ const Queries = gql`
     users: [User]
     event: Event
     events: [Event]
+    upcomingTalks(speakerId: ID!): [Talk]
   }
 `;
-
 
 export default Queries;
