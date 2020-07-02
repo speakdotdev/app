@@ -5,7 +5,6 @@ import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import '../css/tailwind.css';
-import '../node_modules/@fortawesome/fontawesome-pro/css/all.css';
 
 function App({ Component, pageProps, apollo }) {
   return (
