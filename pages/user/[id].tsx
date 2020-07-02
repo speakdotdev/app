@@ -7,8 +7,6 @@ import EventCard from '../../components/EventCard';
 import Head from 'next/head';
 import MainMenu from '../../components/shared/MainMenu';
 import { useRouter } from 'next/router';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
 interface Props {
   speakerName: string;
@@ -21,50 +19,34 @@ interface MainMenu {
   link: string;
 }
 
-const QUERY = gql`
-  query upcomingTalks($speakerId: ID!) {
-    upcomingTalks(speakerId: $speakerId) {
-      name
-    }
-  }
-`;
-
 const Speaker: NextPage<Props> = ({ speakerName }) => {
   const router = useRouter();
-
-  const { data } = useQuery(QUERY, {
-    variables: {
-      speakerId: router.query.id
-    }
-  });
-
-  console.log('upcoming talks', data);
 
   const mainMenu = [
     {
       order: 1,
       icon: 'far fa-keynote',
       name: 'Upcoming Events',
-      link: `/user/${router.query.id}`
+      link: `/user/${router.query.id}`,
     },
     {
       order: 2,
       icon: 'far fa-presentation',
       name: 'Talks',
-      link: '/speaker/talks'
+      link: '/speaker/talks',
     },
     {
       order: 3,
       icon: 'far fa-feather-alt',
       name: 'Posts',
-      link: '/speaker/posts'
+      link: '/speaker/posts',
     },
     {
       order: 4,
       icon: 'fas fa-user',
       name: 'Bio',
-      link: `/user/${router.query.id}/about`
-    }
+      link: `/user/${router.query.id}/about`,
+    },
   ];
   return (
     <div>
@@ -105,9 +87,7 @@ const Speaker: NextPage<Props> = ({ speakerName }) => {
               <UpcomingEvent event="hello" />
             </div>
 
-            <div className="mb-5">
-              <EventCard />
-            </div>
+            <div className="mb-5"></div>
             <div className="mb-5">
               <div className="p-5 shadow-lg">
                 <p className="text-xl">What is MongoDB?</p>
@@ -151,7 +131,7 @@ const Speaker: NextPage<Props> = ({ speakerName }) => {
                     backgroundImage:
                       'url(' +
                       'https://images.unsplash.com/photo-1478172326435-839f111a16c5' +
-                      ')'
+                      ')',
                   }}
                 ></div>
                 <div className="w-full px-5 py-2 rounded-b-md">
@@ -196,13 +176,6 @@ const Speaker: NextPage<Props> = ({ speakerName }) => {
       </div>
     </div>
   );
-};
-
-Speaker.getInitialProps = async () => {
-  const res = await fetch('http://localhost:3000/api/speaker');
-  const data = await res.json();
-
-  return data;
 };
 
 export default Speaker;

@@ -8,18 +8,6 @@ import BlogCard from '../../../components/BlogCard';
 import Head from 'next/head';
 import MainMenu from '../../../components/shared/MainMenu';
 import { useRouter } from 'next/router';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { userInfo } from 'os';
-
-const QUERY = gql`
-  {
-    user {
-      firstName
-      lastName
-    }
-  }
-`;
 
 interface Props {
   speakerName: string;
@@ -35,36 +23,34 @@ interface MainMenu {
 const UserAbout: NextPage<Props> = ({ speakerName }) => {
   const router = useRouter();
 
-  const { loading, data } = useQuery(QUERY);
-  console.log(loading);
-  console.log(data);
-
   const mainMenu = [
     {
       order: 1,
       icon: 'far fa-keynote',
       name: 'Upcoming Events',
-      link: `/user/${router.query.id}`
+      link: `/user/${router.query.id}`,
     },
     {
       order: 2,
       icon: 'far fa-presentation',
       name: 'Talks',
-      link: '/speaker/talks'
+      link: '/speaker/talks',
     },
     {
       order: 3,
       icon: 'far fa-feather-alt',
       name: 'Posts',
-      link: '/speaker/posts'
+      link: '/speaker/posts',
     },
     {
       order: 4,
       icon: 'fas fa-user',
       name: 'About',
-      link: `/user/${router.query.id}/about`
-    }
+      link: `/user/${router.query.id}/about`,
+    },
   ];
+  return <div>Hello</div>;
+  /*
   return (
     <div>
       <Head>
@@ -124,7 +110,8 @@ const UserAbout: NextPage<Props> = ({ speakerName }) => {
         </div>
       </div>
     </div>
-  );
+    
+  );*/
 };
 
 export default UserAbout;
