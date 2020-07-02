@@ -1,22 +1,22 @@
 import { gql } from 'apollo-server-micro';
 
 const User = gql`
-type User {
+  type User {
     _id: String
     firstName: String
     lastName: String
-    email: String!
-    avatarLink: String
-    shortBio: String
+    #email: String!
+    #avatarLink: String
+    #shortBio: String
     fullBio: String
     status: String
     shouldDisplayLocation: Boolean
     events: [Event]
-}
-`
+  }
+`;
 
 const Event = gql`
-type Event {
+  type Event {
     _id: String!
     name: String!
     slug: String!
@@ -29,30 +29,30 @@ type Event {
     longDescription: String
     talks: [Talk]
     #schedule: EventSchedule
-    cfpLink: String
     #cfpClosingDate: Date
-}
-`
+  }
+`;
 
 const Talk = gql`
-    type Talk {
-        name: String!
-        abstract: String
-        fullDescription: String
-        speaker: [User]
-    }
-`
+  type Talk {
+    _id: ID!
+    name: String!
+    abstract: String
+    fullDescription: String
+    speaker: [User]
+  }
+`;
 
 const EventLocation = gql`
-    type EventLocation {
-        venue: String
-        address: String
-        city: String
-        state: String
-        province: String
-        country: String
-    }
-`
-const TypeDefs = [User, Event, EventLocation];
+  type EventLocation {
+    venue: String
+    address: String
+    city: String
+    state: String
+    province: String
+    country: String
+  }
+`;
+const TypeDefs = [User, Event, EventLocation, Talk];
 
 export default TypeDefs;
