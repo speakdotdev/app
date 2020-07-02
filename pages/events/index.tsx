@@ -58,7 +58,6 @@ const Events = ({ data }) => {
 };
 
 export async function getStaticProps(context) {
-  /*
   let query = `
   {
     talk {
@@ -73,14 +72,13 @@ export async function getStaticProps(context) {
       }
     }}`;
 
-  let res = await fetch(`https://app-k253r3umb.vercel.app/api/realm`, {
+  let res = await fetch(`https://speakdevtest.vercel.app/api/realm`, {
     method: 'POST',
     body: query,
   });
 
   let data = await res.json();
-  */
-  let data = {};
+
   return {
     props: {
       data,
