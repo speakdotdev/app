@@ -72,7 +72,7 @@ export async function getStaticProps(context) {
       }
     }}`;
 
-  let res = await fetch('http://localhost:3000/api/realm', {
+  let res = await fetch(`https://app-k253r3umb.vercel.app/api/realm`, {
     method: 'POST',
     body: query,
   });
