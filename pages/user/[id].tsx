@@ -7,6 +7,7 @@ import EventCard from '../../components/EventCard';
 import Head from 'next/head';
 import MainMenu from '../../components/shared/MainMenu';
 import { useRouter } from 'next/router';
+import auth0 from '../../lib/auth0';
 
 interface Props {
   speakerName: string;
@@ -19,9 +20,9 @@ interface MainMenu {
   link: string;
 }
 
-const Speaker: NextPage<Props> = ({ speakerName }) => {
+const Speaker = ({ user }) => {
   const router = useRouter();
-
+  console.log(user);
   const mainMenu = [
     {
       order: 1,
@@ -177,5 +178,15 @@ const Speaker: NextPage<Props> = ({ speakerName }) => {
     </div>
   );
 };
+
+export async function getServerSideProps({ req, res }) {
+  const session = await auth0.getSession(req);
+  console.log(session);
+  return {
+    props: {
+      user: session.user,
+    }, // will be passed to the page component as props
+  };
+}
 
 export default Speaker;

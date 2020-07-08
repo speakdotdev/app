@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Header from '../../components/shared/Header';
 import EventCard from '../../components/EventCard';
 import { useRouter } from 'next/router';
 
@@ -11,6 +12,9 @@ const Event = ({ event }) => {
       <Head>
         <title>{event && event.name} | Speak.dev</title>
       </Head>
+
+      <Header />
+
       <div className=""></div>
       <div className="">
         <div className="container mx-auto">
@@ -55,6 +59,7 @@ export async function getStaticProps({ params }) {
     props: {
       event: data.event,
     },
+    unstable_revalidate: 1,
   };
 }
 
