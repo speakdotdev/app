@@ -10,7 +10,6 @@ const apolloServer = new ApolloServer({
     db: await connectToDatabase(),
     session: await auth0.getSession(req),
   }),
-  introspection: true,
   playground: {
     settings: {
       'request.credentials': 'same-origin',
@@ -24,11 +23,16 @@ export const config = {
   },
 };
 
+const cors = Cors({
+  methods: ['POST', 'OPTIONS'],
+});
+
 const handler = apolloServer.createHandler({ path: '/api/graphql' });
 
-//export default cors((req, res) => {
-//  console.log(req.headers);
-//  req.method === 'OPTIONS' ? res.end() : handler(req, res);
-//});
-
 export default handler;
+/*
+export default cors((req, res) => {
+  console.log(req.method);
+  req.method === 'OPTIONS' ? res.end() : handler(req, res);
+});
+*/

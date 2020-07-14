@@ -9,6 +9,8 @@ const Presentation = gql`
     content: String
     description: String
     notes: String
+    ownerId: String
+    isForkable: Boolean
     tags: [String]
     #owner: User
   }

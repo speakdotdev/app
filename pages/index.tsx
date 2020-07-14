@@ -108,8 +108,6 @@ const Home = ({ user, presentations }) => {
 export async function getServerSideProps({ params, req, res }) {
   const session = await auth0.getSession(req);
 
-  console.log(req.headers.cookie);
-  console.log(`${process.env.GRAPHQL}`);
   if (req.headers.cookie) {
     const presentations = await axios({
       method: 'POST',

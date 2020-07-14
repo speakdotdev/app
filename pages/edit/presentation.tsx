@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
+import axios from 'axios';
 
 interface User {
   name: string;
@@ -32,10 +33,22 @@ const ADD_PRESENTATION = gql`
   }
 `;
 
-const NewPresentation = ({ user }) => {
+const EditPresentation = ({ user, original }) => {
   const [addPresentation, { data }] = useMutation(ADD_PRESENTATION);
-  const { register, handleSubmit, watch, errors } = useForm();
+  const { register, handleSubmit, watch, reset, errors } = useForm({
+    defaultValues: {
+      title: original.title,
+      subtitle: original.subtitle,
+      abstract: original.abstract,
+    },
+  });
   const presentation = watch();
+
+  useEffect(() => {
+    console.log('called');
+  }, []);
+
+  console.log(original);
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -66,12 +79,12 @@ const NewPresentation = ({ user }) => {
               <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-group">
                   <label>
-                    Title ({presentation && 100 - presentation.length})
+                    Title (
+                    {presentation.title && 100 - presentation.title.length})
                   </label>
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
                     name="title"
-                    defaultValue="My Amazing Talk"
                     ref={register}
                   />
                 </div>
@@ -81,7 +94,6 @@ const NewPresentation = ({ user }) => {
                   <input
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
                     name="subtitle"
-                    defaultValue="How I learned to kick ass"
                     ref={register}
                   />
                 </div>
@@ -91,7 +103,6 @@ const NewPresentation = ({ user }) => {
                   <textarea
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
                     name="abstract"
-                    defaultValue="How I learned to kick ass"
                     ref={register}
                   ></textarea>
                 </div>
@@ -117,10 +128,33 @@ const NewPresentation = ({ user }) => {
 export async function getServerSideProps({ req, res }) {
   const session = await auth0.getSession(req);
 
+  const presentations = await axios({
+    method: 'POST',
+    url: `${process.env.GRAPHQL}`,
+    headers: req ? { cookie: req.headers.cookie } : undefined,
+    data: {
+      query: `query Presentation {
+    presentation(_id: "123") {
+      _id
+      title
+      abstract
+      subtitle
+    }
+  }`,
+    },
+  });
+
+  console.log(presentations.data);
+
   if (session) {
-    return { props: { user: session.user } };
+    return {
+      props: {
+        user: session.user,
+        original: presentations.data.data.presentation,
+      },
+    };
   }
   return { props: {} };
 }
 
-export default NewPresentation;
+export default EditPresentation;

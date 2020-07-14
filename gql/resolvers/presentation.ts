@@ -1,9 +1,12 @@
 import { ObjectID } from 'mongodb';
 
 const addPresentation = async (parent, args, ctx) => {
-  const data = await ctx.db
-    .collection('presentations')
-    .insertOne({ title: args.title });
+  const data = await ctx.db.collection('presentations').insertOne({
+    title: args.title,
+    subtitle: args.subtitle,
+    ownerId: ctx.session.user.sub,
+    abstract: args.abstract,
+  });
 
   return data.ops[0];
 };
@@ -27,4 +30,24 @@ const presentations = async (parent, args, ctx) => {
   return data;
 };
 
-export { addPresentation, getOnePresentation, presentation, presentations };
+const myPresentations = async (parent, args, ctx) => {
+  const user = ctx.session.user;
+
+  if (!user) {
+    return [];
+  }
+  const data = await ctx.db
+    .collection('presentations')
+    .find({ ownerId: user.sub })
+    .toArray();
+
+  return data;
+};
+
+export {
+  addPresentation,
+  getOnePresentation,
+  presentation,
+  presentations,
+  myPresentations,
+};

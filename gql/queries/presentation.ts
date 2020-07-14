@@ -5,6 +5,7 @@ const presentation = gql`
     getOnePresentation: Presentation
     presentation(_id: String!): Presentation
     presentations: [Presentation]
+    myPresentations: [Presentation]
   }
 `;
 
