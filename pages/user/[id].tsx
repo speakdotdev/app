@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NextPage } from 'next';
 import fetch from 'isomorphic-unfetch';
 import AboutSpeaker from '../../components/AboutSpeaker';
@@ -49,6 +49,16 @@ const Speaker = ({ user }) => {
       link: `/user/${router.query.id}/about`,
     },
   ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch('http://localhost:3000/api/me');
+      const data = await result.json();
+      console.log('yo');
+      console.log(data);
+    };
+
+    fetchData();
+  }, []);
   return (
     <div>
       <Head>

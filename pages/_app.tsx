@@ -1,6 +1,18 @@
 import { AppProps } from 'next/app';
 import '../css/tailwind.css';
+import withApollo from 'next-with-apollo';
+import ApolloClient, { InMemoryCache } from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />;
-}
+const App = ({ Component, pageProps, apollo }) => (
+  <ApolloProvider client={apollo}>
+    <Component {...pageProps} />
+  </ApolloProvider>
+);
+
+export default withApollo(({ initialState }) => {
+  return new ApolloClient({
+    uri: 'http://localhost:3000/api/graphql',
+    cache: new InMemoryCache().restore(initialState || {}),
+  });
+})(App);

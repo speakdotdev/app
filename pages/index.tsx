@@ -1,9 +1,63 @@
 import React from 'react';
 import Head from 'next/head';
 import auth0 from '../lib/auth0';
+import Header from '../components/shared/Header';
+import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
+import { fetchGraphQLMutation } from '../lib/fetch';
+import { gql } from 'apollo-boost';
+import { useQuery } from '@apollo/react-hooks';
+import axios from 'axios';
+import { env } from 'process';
+
+interface User {
+  name: string;
+  picture: string;
+  sub: string;
+  nickname: string;
+}
+
+const QUERY = gql`
+  query Presentations {
+    presentations {
+      _id
+    }
+  }
+`;
 
 const Home = ({ user }) => {
-  console.log(user);
+  /*
+  const { loading, data } = useQuery(QUERY);
+
+  if (data) {
+    console.log(data);
+  }*/
+  const { register, handleSubmit, watch, errors } = useForm();
+  const onSubmit = async (data) => {
+    console.log(data);
+
+    let mutation = `mutation {
+      insertOneEvent(data: {
+        name: "${data.eventName}"
+        url: "${data.eventURL}"
+        presentations: [{
+          speaker: "Joe"
+        }]
+      }) {
+        _id
+        name
+        url
+      }
+    }`;
+    console.log(mutation);
+
+    let res = await fetch('http://localhost:3000/api/realm', {
+      method: 'POST',
+      body: mutation,
+    });
+    let dat = await res.json();
+    console.log(dat);
+  };
   return (
     <div>
       <Head>
@@ -11,95 +65,71 @@ const Home = ({ user }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="hero">
-        <h1 className="title">Welcome to Next.js! Ryan Test</h1>
-        <p className="description">
-          To get started, edit <code>pages/index.js</code> and save to reload.
-        </p>
+      <Header user={user} />
 
-        <div className="row">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Learn more about Next.js in the documentation.</p>
-          </a>
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Next.js Learn &rarr;</h3>
-            <p>Learn about Next.js by following an interactive tutorial!</p>
-          </a>
-          <a
-            href="https://github.com/zeit/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Find other example boilerplates on the Next.js GitHub.</p>
-          </a>
+      <div className="container mx-auto">
+        <div className="flex">
+          <div className="w-1/4">
+            <div className="menu">
+              <div className="">Profile</div>
+              <div className="">Talks</div>
+              <div className="">Events</div>
+            </div>
+          </div>
+          <div className="w-1/2">
+            Content
+            <div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {/* register your input into the hook by invoking the "register" function */}
+                <input
+                  name="eventName"
+                  defaultValue="test"
+                  ref={register}
+                  multiple
+                />
+
+                {/* include validation with required or other standard HTML validation rules */}
+                <input name="eventURL" ref={register({ required: true })} />
+                {/* errors will return when field validation fails  */}
+                {errors.exampleRequired && <span>This field is required</span>}
+
+                <input type="submit" />
+              </form>
+            </div>
+          </div>
+          <div className="w-1/4">Closing CFPs</div>
         </div>
       </div>
-
-      <style jsx>{`
-        .hero {
-          width: 100%;
-          color: #333;
-        }
-        .title {
-          margin: 0;
-          width: 100%;
-          padding-top: 80px;
-          line-height: 1.15;
-          font-size: 48px;
-        }
-        .title,
-        .description {
-          text-align: center;
-        }
-        .row {
-          max-width: 880px;
-          margin: 80px auto 40px;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-around;
-        }
-        .card {
-          padding: 18px 18px 24px;
-          width: 220px;
-          text-align: left;
-          text-decoration: none;
-          color: #434343;
-          border: 1px solid #9b9b9b;
-        }
-        .card:hover {
-          border-color: #067df7;
-        }
-        .card h3 {
-          margin: 0;
-          color: #067df7;
-          font-size: 18px;
-        }
-        .card p {
-          margin: 0;
-          padding: 12px 0 0;
-          font-size: 13px;
-          color: #333;
-        }
-      `}</style>
     </div>
   );
 };
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps({ params, req, res }) {
   const session = await auth0.getSession(req);
 
-  console.log(session);
-  /*
-  if (!session || !session.user) {
-    res.writeHead(302, {
-      Location: '/api/login',
-    });
-    res.end();
-    return;
+  console.log(req.headers.cookie);
+
+  axios({
+    method: 'POST',
+    url: process.env.GRAPHQL,
+    headers: req ? { cookie: req.headers.cookie } : undefined,
+    data: {
+      query: `query Presentations {
+      presentations {
+        _id
+      }
+    }`,
+    },
+  })
+    .then((data) => {
+      console.log(data.data);
+    })
+    .catch((e) => console.log(e));
+
+  if (session) {
+    return { props: { user: session.user } };
   }
-  */
-  return { props: { user: session } };
+  return { props: {} };
 }
 
 export default Home;

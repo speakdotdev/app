@@ -25,4 +25,16 @@ export async function fetchGraphQLQuery(query) {
   return data.data;
 }
 
-export async function fetchGraphQLMutation() {}
+export async function fetchGraphQLMutation(mutation) {
+  const accessToken = await connectRealm();
+
+  const res = await fetch(process.env.REALM_URI, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ query: mutation }),
+  });
+  const data = await res.json();
+  return data.data;
+}
