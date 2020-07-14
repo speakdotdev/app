@@ -25,13 +25,14 @@ const QUERY = gql`
   }
 `;
 
-const Home = ({ user }) => {
+const Home = ({ user, presentations }) => {
   /*
   const { loading, data } = useQuery(QUERY);
 
   if (data) {
     console.log(data);
   }*/
+  console.log(presentations);
   const { register, handleSubmit, watch, errors } = useForm();
   const onSubmit = async (data) => {
     console.log(data);
@@ -108,10 +109,10 @@ export async function getServerSideProps({ params, req, res }) {
   const session = await auth0.getSession(req);
 
   console.log(req.headers.cookie);
-
-  axios({
+  console.log(`${process.env.GRAPHQL}`);
+  const presentations = await axios({
     method: 'POST',
-    url: process.env.GRAPHQL,
+    url: `${process.env.GRAPHQL}`,
     headers: req ? { cookie: req.headers.cookie } : undefined,
     data: {
       query: `query Presentations {
@@ -120,14 +121,15 @@ export async function getServerSideProps({ params, req, res }) {
       }
     }`,
     },
-  })
-    .then((data) => {
-      console.log(data.data);
-    })
-    .catch((e) => console.log(e));
+  });
 
   if (session) {
-    return { props: { user: session.user } };
+    return {
+      props: {
+        user: session.user,
+        presentations: presentations.data.data.presentations,
+      },
+    };
   }
   return { props: {} };
 }
