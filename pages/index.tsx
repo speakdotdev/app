@@ -123,15 +123,15 @@ export async function getServerSideProps({ params, req, res }) {
     }`,
       },
     });
-  }
 
-  if (session) {
-    return {
-      props: {
-        user: session.user,
-        presentations: presentations.data.data.presentations,
-      },
-    };
+    if (session) {
+      return {
+        props: {
+          user: session.user,
+          presentations: presentations.data.data.presentations,
+        },
+      };
+    }
   }
   return { props: {} };
 }
