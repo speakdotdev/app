@@ -110,18 +110,20 @@ export async function getServerSideProps({ params, req, res }) {
 
   console.log(req.headers.cookie);
   console.log(`${process.env.GRAPHQL}`);
-  const presentations = await axios({
-    method: 'POST',
-    url: `${process.env.GRAPHQL}`,
-    headers: req ? { cookie: req.headers.cookie } : undefined,
-    data: {
-      query: `query Presentations {
+  if (req.headers.cookie) {
+    const presentations = await axios({
+      method: 'POST',
+      url: `${process.env.GRAPHQL}`,
+      headers: req ? { cookie: req.headers.cookie } : undefined,
+      data: {
+        query: `query Presentations {
       presentations {
         _id
       }
     }`,
-    },
-  });
+      },
+    });
+  }
 
   if (session) {
     return {
