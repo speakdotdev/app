@@ -1,4 +1,5 @@
-import me from './user';
+import { me } from './user';
+import { profile } from './profile';
 import {
   presentation,
   presentations,
@@ -14,7 +15,9 @@ const resolvers = {
     presentations,
     myPresentations,
     me,
+    profile,
   },
+
   Mutation: {
     addPresentation,
   },

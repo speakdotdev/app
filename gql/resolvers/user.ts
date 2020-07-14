@@ -4,4 +4,4 @@ const me = async (parent, args, ctx) => {
   return ctx.session.user;
 };
 
-export default me;
+export { me };

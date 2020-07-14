@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-micro';
 
-const User = gql`
-  type User {
+const Profile = gql`
+  type Profile {
     _id: String
     username: String
     name: String
@@ -11,4 +11,4 @@ const User = gql`
   }
 `;
 
-export default User;
+export default Profile;

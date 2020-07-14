@@ -12,7 +12,7 @@ const App = ({ Component, pageProps, apollo }) => (
 
 export default withApollo(({ initialState }) => {
   return new ApolloClient({
-    uri: 'https://speakdevtest.vercel.app/api/graphql',
+    uri: 'http://localhost:3000/api/graphql',
     cache: new InMemoryCache().restore(initialState || {}),
   });
 })(App);

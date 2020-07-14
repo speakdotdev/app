@@ -1,5 +1,6 @@
 import { connectRealm } from './realm';
 import fetch from 'isomorphic-unfetch';
+import axios from 'axios';
 
 export async function fetchUser() {
   try {
@@ -37,4 +38,17 @@ export async function fetchGraphQLMutation(mutation) {
   });
   const data = await res.json();
   return data.data;
+}
+
+export async function gqlQuery(req, query) {
+  const response = await axios({
+    method: 'POST',
+    url: `${process.env.GRAPHQL}`,
+    headers: { cookie: req.headers.cookie },
+    data: {
+      query: query,
+    },
+  });
+
+  return response.data.data;
 }
