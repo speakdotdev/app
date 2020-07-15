@@ -4,7 +4,7 @@ import auth0 from '../lib/auth0';
 import Header from '../components/shared/Header';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-import { fetchGraphQLMutation } from '../lib/fetch';
+import { fetchGraphQLMutation, gqlQuery } from '../lib/fetch';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import axios from 'axios';
@@ -108,29 +108,25 @@ const Home = ({ user, presentations }) => {
 export async function getServerSideProps({ params, req, res }) {
   const session = await auth0.getSession(req);
 
-  if (req.headers.cookie) {
-    const presentations = await axios({
-      method: 'POST',
-      url: `${process.env.GRAPHQL}`,
-      headers: req ? { cookie: req.headers.cookie } : undefined,
-      data: {
-        query: `query Presentations {
-      presentations {
-        _id
+  const data = await gqlQuery(
+    req,
+    `query Presentations {
+        presentations {
+          _id
+        }
       }
-    }`,
-      },
-    });
+  `
+  );
 
-    if (session) {
-      return {
-        props: {
-          user: session.user,
-          presentations: presentations.data.data.presentations,
-        },
-      };
-    }
+  if (session) {
+    return {
+      props: {
+        user: session.user,
+        presentations: data.presentations,
+      },
+    };
   }
+
   return { props: {} };
 }
 

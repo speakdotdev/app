@@ -61,10 +61,11 @@ const User = ({ user, profile }) => {
 
 export async function getServerSideProps({ params, req, res }) {
   const session = await auth0.getSession(req);
+  console.log(params);
 
   const data = await gqlQuery(
     req,
-    `query {profile(_id:"ado") {
+    `query {profile(_id:"${params.id}") {
     _id
     name
     nickname
